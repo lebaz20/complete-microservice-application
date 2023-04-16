@@ -20,15 +20,16 @@ class EventHandler {
         this.productService = productService;
     }
 
-    @RabbitListener(queues = "${offer.queue}")
-    void handleOfferEvent(final ProductOfferEvent productOfferEvent) {
-        log.info("Offer productOfferEvent received for the product of: {}", productOfferEvent.getProductId());
+    @RabbitListener(queues = "${inventory.queue}")
+    void handleInventoryEvent(final ProductInventoryEvent productInventoryEvent) {
+        log.info("Inventory productInventoryEvent received for the product of: {} with quantity: {}", productInventoryEvent.getProductId(), productInventoryEvent.getQuantity());
         try {
-            if (productOfferEvent.getDiscountOffer() > 0)
-                productService.addProductOffer(productOfferEvent.getProductId(), productOfferEvent.getDiscountOffer());
+            if (productInventoryEvent.getQuantity() >= 0)
+                log.info("Updating inventory");
+                productService.updateInventory(productInventoryEvent.getProductId(), productInventoryEvent.getQuantity());
         } catch (final Exception e) {
-            log.error("Error when trying to add offer", e);
-            // Avoids the productOfferEvent to be re-queued and reprocessed.
+            log.error("Error when trying to add inventory", e);
+            // Avoids the productInventoryEvent to be re-queued and reprocessed.
             throw new AmqpRejectAndDontRequeueException(e);
         }
     }

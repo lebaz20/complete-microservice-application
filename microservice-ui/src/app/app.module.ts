@@ -5,7 +5,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { StoreModule } from './store/store.module';
-import { ConfirmationDialog, ProductDialog, PriceDialog, StoreComponent } from './store/store.component';
+import { ProductDialog, InventoryDialog, ProductEditDialog, ProductDeleteDialog, PriceDialog, StoreComponent } from './store/store.component';
 import { RouterModule } from '@angular/router';
 
 import {A11yModule} from '@angular/cdk/a11y';
@@ -109,14 +109,18 @@ export class MaterialModule {}
 @NgModule({
   declarations: [
     AppComponent,
-    ConfirmationDialog,
+    InventoryDialog,
     PriceDialog,
-    ProductDialog
+    ProductDialog,
+    ProductEditDialog,
+    ProductDeleteDialog
   ],
   entryComponents: [
-    ConfirmationDialog, 
+    InventoryDialog,
     PriceDialog, 
-    ProductDialog
+    ProductDialog,
+    ProductEditDialog,
+    ProductDeleteDialog
   ],
   imports: [
     BrowserModule,

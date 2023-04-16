@@ -22,21 +22,42 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product addProduct(ProductRequest productRequest) {
-		Double currentPrice = null;
-		if (productRequest.getDiscountOffer() != null && productRequest.getDiscountOffer() > 0){
-			Double discountPrice = (productRequest.getDiscountOffer()*productRequest.getPrice())/100;
-			currentPrice = productRequest.getPrice()-discountPrice;
+		Integer quantity = 0;
+		if (productRequest.getQuantity() != null && productRequest.getQuantity() > 0){
+			quantity = productRequest.getQuantity();
 		}
 		Product product = new Product().builder()
 				.productCode(productRequest.getProductCode())
 				.productTitle(productRequest.getProductTitle())
 				.imageUrl(productRequest.getImageUrl())
-				.discountOffer(productRequest.getDiscountOffer())
 				.price(productRequest.getPrice())
-				.currentPrice(currentPrice)
+				.quantity(quantity)
 				.build();
 
 		return productRepository.save(product);
+	}
+
+	@Override
+	public Product editProduct(Integer id, ProductRequest productRequest) {
+		Optional<Product> product = productRepository.findById(id);
+		if(product.isPresent()){
+			product.get().setPrice(productRequest.getPrice());
+			product.get().setQuantity(productRequest.getQuantity());
+			product.get().setProductCode(productRequest.getProductCode());
+		    product.get().setProductTitle(productRequest.getProductTitle());
+		    product.get().setImageUrl(productRequest.getImageUrl());
+			return productRepository.save(product.get());
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public void deleteProduct(Integer id) {
+		Optional<Product> product = productRepository.findById(id);
+		if(product.isPresent()){
+			productRepository.deleteById(id);
+		}
 	}
 
 	@Override
@@ -50,12 +71,10 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void addProductOffer(Integer productId, Double discountOffer) {
+	public void updateInventory(Integer productId, Integer quantity) {
 		Optional<Product> product = getProductById(productId);
-		if(product.isPresent() && product.get().getPrice() != null){
-			Double discountPrice = (discountOffer*product.get().getPrice())/100;
-			product.get().setCurrentPrice(product.get().getPrice()-discountPrice);
-			product.get().setDiscountOffer(discountOffer);
+		if(product.isPresent()){
+			product.get().setQuantity(quantity);
 			productRepository.save(product.get());
 		}
 	}
@@ -66,13 +85,7 @@ public class ProductServiceImpl implements ProductService {
 			return null;
 		Optional<Product> product = productRepository.findById(id);
 		if(product.isPresent()){
-			if (product.get().getDiscountOffer() != null && product.get().getDiscountOffer() > 0){
-				Double discountPrice = (product.get().getDiscountOffer()*price)/100;
 				product.get().setPrice(price);
-				product.get().setCurrentPrice(price-discountPrice);
-			} else {
-				product.get().setPrice(price);
-			}
 			return productRepository.save(product.get());
 		} else {
 			return null;

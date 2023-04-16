@@ -6,21 +6,21 @@ module.exports = function () {
                 productCode: "TW1", 
                 productTitle: "Titan Watch",
                 imageUrl: "titan.png", 
-                discountOffer: null
+                quantity: null
             },
             {   
                 id: 2, 
                 productCode: "FTW1", 
                 productTitle: "FastTrack Watch",
                 imageUrl: "fasttrack.png", 
-                discountOffer: 20
+                quantity: 20
             },
             {   
                 id: 3, 
                 productCode: "RW1", 
                 productTitle: "Rolex Watch",
                 imageUrl: "rolex.png", 
-                discountOffer: null
+                quantity: null
             }
         ],
         orders: []

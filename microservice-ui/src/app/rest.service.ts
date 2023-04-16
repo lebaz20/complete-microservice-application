@@ -6,7 +6,7 @@ import { Product } from './model/product.model';
 import { Router } from '@angular/router';
 
 const productsUrl = 'http://localhost:8000/product-service/products';
-const offerUrl = 'http://localhost:8000/offer-service/offer';
+const inventoryUrl = 'http://localhost:8000/inventory-service/inventory';
 const httpOptions = {
     headers: new HttpHeaders({
       'Content-Type':  'application/json'
@@ -28,6 +28,23 @@ export class RestService {
             );
     }
 
+    editProduct(product): Observable<any> {
+        console.log(product);
+        return this.http.put<any>(productsUrl + "/" + product.id, 
+            JSON.stringify(product), httpOptions)
+            .pipe(
+                catchError(this.handleError<any>('editProduct'))
+            );
+    }
+
+    deleteProduct(product): Observable<any> {
+        console.log(product);
+        return this.http.delete<any>(productsUrl + "/" + product.id, httpOptions)
+            .pipe(
+                catchError(this.handleError<any>('editProduct'))
+            );
+    }
+
     addPrice(product): Observable<any> {
         console.log(product.id);
         console.log(product.price);
@@ -38,13 +55,13 @@ export class RestService {
         );
     }
 
-    addDiscount(offer): Observable<any> {
-        console.log(offer.id);
-        console.log(offer.discountOffer);
-        return this.http.post<any>(offerUrl, 
-            JSON.stringify(offer), httpOptions)
+    updateInventory(inventory): Observable<any> {
+        console.log(inventory.productId);
+        console.log(inventory.quantity);
+        return this.http.post<any>(inventoryUrl, 
+            JSON.stringify(inventory), httpOptions)
             .pipe(
-                catchError(this.handleError<any>('addOffer'))
+                catchError(this.handleError<any>('updateInventory'))
             );
     }
 

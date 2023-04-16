@@ -11,7 +11,7 @@ Here is total 5 separate application (1 frontend + 4 backend).
 - service-registry
 - api-gateway
 - product-service
-- offer-service
+- inventory-service
 
 # What is microservice?
 Microservice is a modern as well as a popular architecture of designing software application over the last few years. 
@@ -24,7 +24,7 @@ A microservice application is consist of different services where every service 
 
 above two are the key requirements of a microservice application.
 
-In this microservice application here are two service **product-service** and **offer-service** both independently 
+In this microservice application here are two service **product-service** and **inventory-service** both independently 
 deployable and scalable. **They are using two different database but this is not an issue about microservice architecture. 
 They can use the same database.**
 
@@ -140,7 +140,7 @@ mvn spring-boot:run
 ````
 The application will run in ``http://localhost:8000/``.
 
-api-gateway is configured such a way that we can call product-service and offer-service api through api-gateway.   
+api-gateway is configured such a way that we can call product-service and inventory-service api through api-gateway.   
 Like - when we call with a specific url pattern api-gateway will forward the request to the corresponding service based 
 on that url pattern.  
 
@@ -149,16 +149,16 @@ on that url pattern.
 |Get all products |GET            |``http://localhost:8000/product-service/products``         | product-service     | ``http://localhost:8081/products`` |    
 |Add new product  |POST           |``http://localhost:8000/product-service/products``         | product-service     | ``http://localhost:8081/products`` |    
 |Update price     |PUT            |``http://localhost:8000/product-service/products/addPrice``| product-service     | ``http://localhost:8081/products`` |    
-|Add offer        |POST           |``http://localhost:8000/offer-service/offer``              | offer-service       | ``http://localhost:8082/offer``    |
+|Add inventory        |POST           |``http://localhost:8000/inventory-service/inventory``              | inventory-service       | ``http://localhost:8082/inventory``    |
 
 Above table contains all the used api in this entire application.
 
 If we have multiple instance for product-service like ``http://localhost:8081`` and ``http://localhost:8180``.
 So when we call ``http://localhost:8000/product-service/products`` api gateway will forward it to one of the two instance 
-of product-service as load balancing in Round-robin order since Zuul api-gateway use Ribbon load balancer.
+of product-service as load balancing in Round-robin inventory since Zuul api-gateway use Ribbon load balancer.
 Api gateway frequently keep updated all available instance list of a service from eureka server.  
   
-**you can create as many as instance you need for product-service as well as offer-service api-gateway will handle it smartly.**
+**you can create as many as instance you need for product-service as well as inventory-service api-gateway will handle it smartly.**
 
 So we can say that api-gateway is the front door of our backend application by passing this we need to enter kitchen or 
 washroom whatever. [Bad joke LOL]
@@ -234,16 +234,16 @@ So far our browser window like this
 
 ![all added products](readme-images/all-product-added.png)
 
-If you check product table there is three product added with no **discount_offer**. We will add **discount_offer** by 
-sending an event notification from other offer-service application.
+If you check product table there is three products added with no **inventory**. We will add **inventory** by 
+sending an event notification from the other inventory-service application.
 
 One additional information, I have not added any price when adding *Rolex*. Price can be added or updated later after 
 adding any product by ``Add Price`` button.
 
-## Run Offer service
+## Run Inventory service
 Open separate terminal and run
  ````
- cd offer-service/
+ cd inventory-service/
  mvn clean install
  mvn spring-boot:run
  ````
@@ -251,48 +251,48 @@ Application will run on ``http://localhost:8082/``
 
 Access it's data source console in browser by
 `localhost:8082/h2`  
-To connect offer data source h2 console use below credentials  
-JDBC URL  : `jdbc:h2:~/offer`  
+To connect inventory data source h2 console use below credentials  
+JDBC URL  : `jdbc:h2:~/inventory`  
 User Name : `root`  
 Password  : `root`
 
-Check offer table and there is no offer right now.  
-Let's add a offer for *product_id = 1* by calling `http://localhost:8000/offer-service/offer` POST endpoint with below body in postman
+Check inventory table and there is no inventory right now.  
+Let's add a inventory for *product_id = 1* by calling `http://localhost:8000/inventory-service/inventory` POST endpoint with below body in postman
 ````
 {
 	"productId": 1,
-	"discountOffer": 10
+	"quantity": 10
 }
 ````
-Or in microservice-ui press ``Add Discount`` button and fill the pop-up window with above value then press ``Add`` to 
-add discount for *product_id = 1*  
+Or in microservice-ui press ``Update Inventory`` button and fill the pop-up window with above value then press ``Update`` to 
+update inventory for *product_id = 1*  
 
-![add offer](readme-images/add-offer.png)
+![update inventory](readme-images/update-inventory.png)
 
-If you check offer table there is an offer recorded for *product_id = 1*  and browser will show  
+If you check inventory table there is an inventory recorded for *product_id = 1*  and browser will show  
 
-![offer added](readme-images/offer-added.png)
+![inventory updated](readme-images/inventory-updated.png)
 
-Now you are seeing *Payable: $27* for *product_id = 1* after calculating discount.
+Now you are seeing *Quantity: 10* for *product_id = 1* after adding inventory.
 
 **Alert! I am going to show you an interesting thing**, if you check product table from product-service data source 
-where *product_id = 1* is updated by discount_offer = 10 and current_price = 27.
+where *product_id = 1* is updated by quantity = 10.
 
-**Note:** Here Offer and Product table are from two different database and running on different port.
+**Note:** Here Inventory and Product table are from two different database and running on different port.
 Because both service are using different database. 
 
-Here you called offer-service api and it's added a new offer record in it's own data source as well as updated product 
+Here you called inventory-service api and it's added a new inventory record in it's own data source as well as updated product 
 record where *product_id = 1*. 
 
 ### So how is this happened?
-From **offer-service** when we add an offer for a specific product, it pushes an event notification to **product-service** 
-with discount_offer and **product-service** received the event then update it's own database according to it's own business
+From **inventory-service** when we add an inventory for a specific product, it pushes an event notification to **product-service** 
+with quantity and **product-service** received the event then update it's own database according to it's own business
 logic of the event.
 
 ### How service to service event working?
-Here RabbitMQ is configured with both offer-service and product-service. In offer-service when a offer added it will push 
-an event to product-service. RabbitMQ push the events as a queue[one by one serially] order from event producer to event
-consumer. For these event offer-service is producer, product-service is consumer. RabbitMQ ensure all event must be pushed 
+Here RabbitMQ is configured with both inventory-service and product-service. In inventory-service when a inventory added it will push 
+an event to product-service. RabbitMQ push the events as a queue[one by one serially] inventory from event producer to event
+consumer. For these event inventory-service is producer, product-service is consumer. RabbitMQ ensure all event must be pushed 
 to consumer if RabbitMQ server is running.
 
 ### What will happen if the RabbitMQ server is shutdown?  
@@ -312,7 +312,7 @@ Congratulations you have completed the documentation still recheck the workflow 
 
 # Conclusion
 So far this is a complete microservice application. You can enhance the application by adding other service like 
-product-service or offer-service(what your requirements demands) by configuring with service-registry and api-gateway.
+product-service or inventory-service(what your requirements demands) by configuring with service-registry and api-gateway.
 You also can furnish the application with other handy application like Hystrix, Zipkin, Feign, Sidecar. There are lots 
 of handy tools to make the application interactive.  
 

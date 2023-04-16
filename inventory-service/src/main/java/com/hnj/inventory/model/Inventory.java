@@ -1,4 +1,4 @@
-package com.hnj.product.model;
+package com.hnj.inventory.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,26 +15,16 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "product")
-public class Product {
+@Entity(name = "inventory")
+public class Inventory {
     @Id
     @GeneratedValue
     private Integer id;
 
-    @Column(name = "product_code")
+    @Column(name = "product_id")
     @NotNull
-    private String productCode;
-
-    @Column(name = "product_title")
-    @NotNull
-    private String productTitle;
-
-    @Column(name = "image_url")
-    private String imageUrl;
+    private Integer productId;
 
     @Column(name = "quantity")
     private Integer quantity;
-
-    @Column(name = "price")
-    private Double price;
 }

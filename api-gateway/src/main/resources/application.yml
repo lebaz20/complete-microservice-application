@@ -12,9 +12,9 @@ zuul:
       path: /product-service/**
       service-id: product-service
       stripPrefix: true
-    offer-service:
-      path: /offer-service/**
-      serviceId: offer-service
+    inventory-service:
+      path: /inventory-service/**
+      serviceId: inventory-service
       stripPrefix: true
 
 endpoints:

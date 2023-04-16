@@ -1,33 +1,34 @@
 <div class="container-fluid">
     <div class="row">
-        <div style="padding-bottom: 10px; padding-top: 10px;" class="col bg-dark text-white" id="menu">
-            <a class="navbar-brand">WATCH STORE</a>
-        </div>
-    </div>
+        <div style="padding-bottom: 10px; padding-top: 10px;" class="col bg-light text-white" id="menu">
+            <a class="navbar-brand text-dark"><b>CIT-611 Assignment#1</b></a>
 
-    <div style="margin-top: 40px;" class="row-fluid justify-content-center">
-        <div style="margin-bottom: 30px; margin-left: 150px;" class="col-12 float-left">
-            <button type="button" style="margin-left: 30px;" class="btn btn-outline-dark btn-sm float-left" 
+        </div>
+        <div style="margin-bottom: 0px; margin-left: 0px;" class="col-12 float-left">
+            <button type="button" style="margin-left: 0px;" class="col-3 btn btn-dark btn-sm float-left" 
                 (click)="openProductDialog()">
                 Add New Product
             </button>
 
-            <button type="button" style="margin-left: 100px;" class="btn btn-outline-dark btn-sm float-left" 
+            <!-- <button type="button" style="margin-left: 100px;" class="btn btn-outline-dark btn-sm float-left" 
                     (click)="openPriceDialog()">
-                Add Price
-            </button>
+                Update Price
+            </button> -->
 
-            <button type="button" style="margin-left: 100px;" class="btn btn-outline-dark btn-sm float-left" 
-                    (click)="openDiscountDialog()">
-                Add Discount
+            <button type="button" style="margin-left: 30px;" class="col-3 btn btn-dark btn-sm float-left" 
+                    (click)="openInventoryDialog()">
+                Update Inventory
             </button>
         </div>
+    </div>
+
+    <div style="margin-top: 40px;" class="row-fluid justify-content-center">
+        
 
         <div *ngFor="let product of products">
             <div class="col-4 float-left">
-                <h3> {{product.productTitle}} </h3>
-                <h6> product id : {{product.id}} </h6>
-                <h6> product code : {{product.productCode}} </h6>
+                <h3> {{product.productTitle}} #{{product.id}}</h3>
+                <!-- <h6> {{product.productCode}} </h6> -->
 
                 <div *ngIf="product.price > 0; else addPrice">
                     <h4 class="badge badge-dark float-left">
@@ -35,28 +36,37 @@
                     </h4>
                 </div>
 
-                <div *ngIf="product.currentPrice > 0;">
+                <div *ngIf="product.quantity > 0; else outOfStock">
                     <h4 style="margin-left: 20px;" class="badge badge-primary float-left">
-                        Payable : ${{ product.currentPrice }}
+                        Stock : {{ product.quantity }}
                     </h4>
                 </div>
-
-                <div *ngIf="product.discountOffer > 0; else addDiscount">
+                <ng-template #outOfStock>
                     <h4 style="margin-left: 20px;" class="badge badge-secondary float-left">
-                        Discount : {{ product.discountOffer }}%
+                        Out of stock
                     </h4>
-                </div>
+                </ng-template>
 
                 <ng-template #addPrice>
                     <h4 class="badge badge-warning float-left">Price Not Added</h4>
                 </ng-template>
-                <ng-template #addDiscount>
-                    <h4 style="margin-left: 20px;" class="badge badge-info float-left">No Discount</h4>
-                </ng-template>
+
+                <br />
+                <div style="clear:both">
+                    <button type="button" class="col-3 btn btn-outline-dark btn-sm float-left" 
+                            (click)="openProductEditDialog(product)">
+                        Update
+                    </button>
+                    <button type="button" style="margin-left: 30px;" class="col-3 btn btn-outline-dark btn-sm float-left" 
+                            (click)="openProductDeleteDialog(product)">
+                        Delete
+                    </button>
+                </div>
+
             </div>
 
             <div class="col-5 float-left">
-                <img [attr.src]="product.imageUrl" width="500px" height="250px" />
+                <img [attr.src]="product.imageUrl" height="150px" />
             </div>
         </div>
     </div>

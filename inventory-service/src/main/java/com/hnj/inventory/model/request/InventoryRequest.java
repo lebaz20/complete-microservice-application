@@ -1,4 +1,4 @@
-package com.hnj.product.model.request;
+package com.hnj.inventory.model.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductRequest {
-    private String productCode;
-    private String productTitle;
-    private String imageUrl;
+public class InventoryRequest {
+    private Integer productId;
     private Integer quantity;
-    private Double price;
 }

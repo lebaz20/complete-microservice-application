@@ -38,4 +38,14 @@ public class ProductController {
 	public Product getProduct(@PathVariable Integer id){
 		return productService.getProductById(id).isPresent() ? productService.getProductById(id).get() : null;
 	}
+
+	@PutMapping("/products/{id}")
+	public Product editProduct(@PathVariable Integer id, @Valid @RequestBody ProductRequest productRequest){
+		return productService.editProduct(id, productRequest);
+	}
+
+	@DeleteMapping("/products/{id}")
+	public void deleteProduct(@PathVariable Integer id){
+		productService.deleteProduct(id);
+	}
 }

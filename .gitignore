@@ -1,5 +1,5 @@
-offer-service/.mvn
-offer-service/.gitignore
+inventory-service/.mvn
+inventory-service/.gitignore
 
 product-service/.mvn
 product-service/.gitignore
@@ -20,7 +20,7 @@ target/
 !**/src/main/**
 !**/src/test/**
 
-offer-service/.mvn/*
+inventory-service/.mvn/*
 product-service/.mvn/*
 
 ### STS ###

@@ -10,6 +10,8 @@ public interface ProductService {
     Product addProduct(ProductRequest productRequest);
     List<Product> getAllProducts();
     Optional<Product> getProductById(Integer productId);
-    void addProductOffer(Integer productId, Double discountOffer);
+    void updateInventory(Integer productId, Integer quantity);
     Product addPrice(Integer id, Double price);
+    Product editProduct(Integer id, ProductRequest productRequest);
+    void deleteProduct(Integer id);
 }
