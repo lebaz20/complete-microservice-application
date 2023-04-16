@@ -74,7 +74,7 @@ export class StoreComponent implements OnInit {
     openProductDialog() {
         const dialogRef = this.dialog.open(ProductDialog, {
             width: '400px',
-            height: '470px'
+            height: '400px'
         });
     
         dialogRef.afterClosed().subscribe((showSnackBar: boolean) => {
@@ -90,7 +90,7 @@ export class StoreComponent implements OnInit {
         console.log(product)
         const dialogRef = this.dialog.open(ProductEditDialog, {
             width: '400px',
-            height: '470px',
+            height: '400px',
             data: {
                 product
             }
